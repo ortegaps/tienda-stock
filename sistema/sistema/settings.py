@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -123,4 +124,4 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'inventario.Usuario' # modelo de usuario
 
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

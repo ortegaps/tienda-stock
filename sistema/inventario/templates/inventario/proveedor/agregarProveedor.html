@@ -1,262 +1,155 @@
 {% extends "inventario/comun/base.html" %}
 
 {% block content %}
+
 <script>
-	
-function clienteCamposOcultos(esto)
-{
-	let check = esto.checked
+function clienteCamposOcultos(esto) {
+    let check = esto.checked;
 
-	let segTelefono = document.getElementById('div_telefono2')
-	let segCorreo = document.getElementById('div_correo2')
+    let segTelefono = document.getElementById('div_telefono2');
+    let segCorreo = document.getElementById('div_correo2');
 
+    if (check) {
+        segTelefono.style.display = 'block';
+        segCorreo.style.display = 'block';
+    } else {
+        segTelefono.style.display = 'none';
+        segCorreo.style.display = 'none';
+    }
+}
 
-	console.log(check)
-	if(check)
-	{
-		console.log("MOSTRAR!!")
-		//$(document).ready(function(){
-		segTelefono.style = 'display: block;';
-		segCorreo.style = 'display: block;';
-							//		}
-							//		)
-	}
-
-	else
-	{
-		console.log("ESCONDER :(")
-		//$(document).ready(function(){
-		segTelefono.style = 'display: none;';
-		segCorreo.style = 'display: none;';
-									//}
-									//)
-	}
-
-}	
-
+window.onload = function() {
+    document.getElementById('div_telefono2').style.display = 'none';
+    document.getElementById('div_correo2').style.display = 'none';
+    document.getElementById('mostrar_opcionales').checked = false;
+}
 </script>
-
 
 <article class="content forms-page">
-	    <div class="title-block">
-	    	{% if editar %}
-          <h3 class="title">Editar proveedor</h3>
-          <p class="title-description">Cambie los datos del proveedor</p>
-	    	{% else %}
-          <h3 class="title">Agregar proveedor</h3>
-          <p class="title-description">Introduzca los datos del proveedor</p>
-          {% endif %}
-        </div>
-<section class="section">
-    <div class="row sameheight-container">
-	<div class="col-md-12">
+    <div class="title-block">
+        {% if editar %}
+        <h3 class="title">Editar proveedor</h3>
+        <p class="title-description">Cambie los datos del proveedor</p>
+        {% else %}
+        <h3 class="title">Agregar proveedor</h3>
+        <p class="title-description">Introduzca los datos del proveedor</p>
+        {% endif %}
+    </div>
 
- {% for error in form.non_field_errors %}
-<div class="card card-primary">
-            <div class="card-header"> 
-            	<div class="header-block">
-            		<p class="title">{{ form.errors }}</p>
-  {% endfor %}
-
-		{% if modo == "agregado" %}
-		{% if messages %}
-        {% for message in messages %}
-		 <div class="card card-primary">
-            <div class="card-header"> 
-            	<div class="header-block">
-            		<em class="fa fa-check"></em>
-                        <p class="title">{{ message }}</p>
+    <section class="section">
+        <div class="row sameheight-container">
+            <div class="col-md-12">
+                {% for error in form.non_field_errors %}
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <div class="header-block">
+                            <p class="title">{{ form.errors }}</p>
+                        </div>
                     </div>
                 </div>
-         </div>
-        {%endfor%}
-		{%endif%}
-		{%endif%}
+                {% endfor %}
 
-		{% if modo == "editado" %}
-		{% if messages %}
-        {% for message in messages %}
-		 <div class="card card-primary">
-            <div class="card-header"> 
-            	<div class="header-block">
-            		<em class="fa fa-check"></em>
-                        <p class="title">{{ message }}</p>
+                {% if modo == "agregado" and messages %}
+                {% for message in messages %}
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <div class="header-block">
+                            <em class="fa fa-check"></em>
+                            <p class="title">{{ message }}</p>
+                        </div>
                     </div>
                 </div>
-         </div>
-        {%endfor%}
-		{%endif%}
-		{%endif%}
+                {% endfor %}
+                {% endif %}
 
-<!-------------------   FORMULARIO PARA AGREGAR PROVEEDOR ---------------------------------->
-		<div class="card card-block sameheight-item">
-			<form role="form" method="POST" onsubmit="return validarTodo('proveedor')">
-			{% csrf_token %}
+                {% if modo == "editado" and messages %}
+                {% for message in messages %}
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <div class="header-block">
+                            <em class="fa fa-check"></em>
+                            <p class="title">{{ message }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
 
-<!----------------   CAMPOS DE TIPO DE CEDULA Y CEDULA  ---------------------->
+                <!-------------------   FORMULARIO PARA AGREGAR PROVEEDOR ---------------------------------->
+                <div class="card card-block sameheight-item">
+                    <form role="form" method="POST" onsubmit="return validarTodo('proveedor')">
+                        {% csrf_token %}
 
-				<label for="{{ form.cedula.name }}">
-					{{form.cedula.label}}
-				</label>
-			<div class="row form-group">
-                <div class="col-2">
-                 {{form.tipoCedula}}
-             	</div>
-                    <div class="col-10">
-                      {{form.cedula}}
-                  </div>
+                        <!----------------   CAMPOS DE CÉDULA ---------------------->
+                        <div class="form-group">
+                            <label for="{{ form.cedula.id_for_label }}">Cédula</label>
+                            {{ form.cedula }}
+                        </div>
+
+                        <!-----------------   CAMPO DEL NOMBRE ------------------>
+                        <div class="form-group">
+                            <label for="{{ form.nombre.id_for_label }}">Nombre</label>
+                            {{ form.nombre }}
+                        </div>
+
+                        <!-----------------   CAMPO DEL APELLIDO ------------------>
+                        <div class="form-group">
+                            <label for="{{ form.apellido.id_for_label }}">Apellido</label>
+                            {{ form.apellido }}
+                        </div>
+
+                        <!-----------------   CAMPO DE LA DIRECCIÓN ------------------>
+                        <div class="form-group">
+                            <label for="{{ form.direccion.id_for_label }}">Dirección</label>
+                            {{ form.direccion }}
+                        </div>
+
+                        <!-----------------   CAMPO DEL NACIMIENTO ------------------>
+                        <div class="form-group">
+                            <label for="{{ form.nacimiento.id_for_label }}">Fecha de Nacimiento</label>
+                            {{ form.nacimiento }}
+                        </div>
+
+                        <!-----------------   CAMPO DEL TELÉFONO ------------------>
+                        <div class="form-group">
+                            <label for="{{ form.telefono.id_for_label }}">Teléfono</label>
+                            {{ form.telefono }}
+                        </div>
+
+                        <!-----------------   CAMPO DEL CORREO ------------------>
+                        <div class="form-group">
+                            <label for="{{ form.correo.id_for_label }}">Correo</label>
+                            {{ form.correo }}
+                        </div>
+
+                        <!-----------------   CAMPO DEL CORREO ALTERNATIVO ------------------>
+                        <div class="form-group" id="div_correo2">
+                            <label for="{{ form.correo2.id_for_label }}">Correo Alternativo</label>
+                            {{ form.correo2 }}
+                        </div>
+
+                        <!-----------------   CAMPO DEL TELÉFONO ALTERNATIVO ------------------>
+                        <div class="form-group" id="div_telefono2">
+                            <label for="{{ form.telefono2.id_for_label }}">Teléfono Alternativo</label>
+                            {{ form.telefono2 }}
+                        </div>
+
+                        <!------------    MUESTRA LOS CAMPOS OPCIONALES -------------->
+                        <div class="form-group">
+                            <label>
+                                <input id="mostrar_opcionales" class="checkbox rounded" type="checkbox" onchange="clienteCamposOcultos(this)">
+                                <span>Mostrar campos opcionales</span>
+                            </label>
+                        </div>
+
+                        <!------------------------------- BOTÓN DE INGRESO ------------------------------------>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-<!------------------   FIN DE CAMPOS  ------------------------------------------>
-
-
-<!-----------------   CAMPO DEL NOMBRE DEL CLIENTE ------------------>
-
-			<div class="form-group">
-				<label for="{{ form.nombre.name }}">
-					{{form.nombre.label}}
-				</label>
-					{{form.nombre}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!-----------------   CAMPO DEL APELLIDO DEL CLIENTE ------------------>
-
-			<div class="form-group">
-				<label for="{{ form.apellido.name }}">
-					{{form.apellido.label}}
-				</label>
-					{{form.apellido}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!-----------------   CAMPO DE LA DIRECCION DEL CLIENTE ------------------>
-
-			<div class="form-group">
-				<label for="{{ form.direccion.name }}">
-					{{form.direccion.label}}
-				</label>
-					{{form.direccion}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!-----------------   CAMPO DEL NACIMIENTO DEL CLIENTE ------------------>
-
-			<div class="form-group">
-				<label for="{{ form.nacimiento.name }}">
-					{{form.nacimiento.label}}
-				</label>
-					{{form.nacimiento}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!-----------------   CAMPO DEL TELEFONO DEL CLIENTE ------------------>
-
-			<div class="form-group">
-				<label for="{{ form.telefono.name }}">
-					{{form.telefono.label}}
-				</label>
-					{{form.telefono}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!-----------------   CAMPO DEL CORREO DEL CLIENTE ------------------>
-
-			<div class="form-group">
-				<label for="{{ form.correo.name }}">
-					{{form.correo.label}}
-				</label>
-					{{form.correo}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!-----------------   CAMPO DEL CORREO ALTERNATIVO DEL CLIENTE ------------------>
-
-			<div class="form-group" id="div_correo2">
-				<label for="{{ form.correo2.name }}">
-					{{form.correo2.label}}
-				</label>
-					{{form.correo2}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!-----------------   CAMPO DEL TELEFONO ALTERNATIVO DEL CLIENTE ------------------>
-
-			<div class="form-group" id="div_telefono2">
-				<label for="{{ form.telefono2.name }}">
-					{{form.telefono2.label}}
-				</label>
-					{{form.telefono2}}
-			</div>
-
-<!-----------------   FIN DE CAMPOS ---------------------------------->
-
-
-<!------------    MUESTRA LOS CAMPOS DE CORREO Y TELEFONO ALTERNATIVOS -------------->
-				<div class="form-group">
-					<label>
-						<input class="checkbox rounded" type="checkbox"
-						onchange="clienteCamposOcultos(this)" id="mostrar_opcionales">
-						<span>
-						Mostrar campos opcionales
-						</span>
-					</label>
-				</div>
-<!------------------------------- FIN DE CAMPOS OPCIONALES -------------------------->	
-
-
-
-<!------------------------------- BOTON DE INGRESO ------------------------------------>
-		<div class="form-group">
-            <button type="submit" class="btn btn-primary">Ingresar</button>
         </div>
-<!---------------------------------- FIN DE BOTON ---------------------------------->
-
-
-			</form>
-<!----------------------------------- FIN DEL FORMULARIO -------------------------->
-
-
-		</div>
-	</div>
-	</div>
-</div> <!-- card primary -->
-</div> <!-- col -->
-</div> <!-- row -->
-</section>
+    </section>
 </article>
 {% endblock %}
-
-<script>
-
-document.onload
-{
-	let tipoCedula = document.getElementById('tipoCedula')
-	console.log(tipoCedula)	
-
-	let segTelefono = document.getElementById('div_telefono2')
-	let segCorreo = document.getElementById('div_correo2')
-
-	segTelefono.style = 'display: none;';
-	segCorreo.style = 'display: none;';
-
-	let opcionales = document.getElementById('mostrar_opcionales')
-	opcionales.checked = false;
-}
-	
-
-</script>

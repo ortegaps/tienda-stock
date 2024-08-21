@@ -1,0 +1,24 @@
+[
+    {
+        "model": "inventario.producto",
+        "pk": 1,
+        "fields": {
+            "descripcion": "Producto 1",
+            "precio": "1000.00",
+            "disponible": 10,
+            "categoria": "1",
+            "tiene_iva": true
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 2,
+        "fields": {
+            "descripcion": "Producto 2",
+            "precio": "2500.00",
+            "disponible": 20,
+            "categoria": "2",
+            "tiene_iva": false
+        }
+    }
+]

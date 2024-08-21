@@ -237,7 +237,7 @@ class ProveedorFormulario(forms.ModelForm):
 
 
     class Meta:
-        model = Cliente
+        model = Proveedor
         fields = ['tipoCedula','cedula','nombre','apellido','direccion','nacimiento','telefono','correo','telefono2','correo2']
         labels = {
         'cedula': 'Cedula del proveedor',
