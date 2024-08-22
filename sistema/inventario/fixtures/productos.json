@@ -3,9 +3,9 @@
         "model": "inventario.producto",
         "pk": 1,
         "fields": {
-            "descripcion": "Producto 1",
-            "precio": "1000.00",
-            "disponible": 10,
+            "descripcion": "Televisor 4K 55 pulgadas",
+            "precio": "500000",
+            "disponible": 15,
             "categoria": "1",
             "tiene_iva": true
         }
@@ -14,9 +14,97 @@
         "model": "inventario.producto",
         "pk": 2,
         "fields": {
-            "descripcion": "Producto 2",
-            "precio": "2500.00",
+            "descripcion": "Laptop Gaming 16GB RAM",
+            "precio": "1200000",
+            "disponible": 8,
+            "categoria": "2",
+            "tiene_iva": true
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 3,
+        "fields": {
+            "descripcion": "Teléfono Inteligente 128GB",
+            "precio": "300000",
+            "disponible": 30,
+            "categoria": "3",
+            "tiene_iva": true
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 4,
+        "fields": {
+            "descripcion": "Auriculares Bluetooth",
+            "precio": "80000",
+            "disponible": 25,
+            "categoria": "4",
+            "tiene_iva": false
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 5,
+        "fields": {
+            "descripcion": "Cámara Digital 24MP",
+            "precio": "450000",
+            "disponible": 12,
+            "categoria": "1",
+            "tiene_iva": true
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 6,
+        "fields": {
+            "descripcion": "Tablet 10 pulgadas 64GB",
+            "precio": "200000",
             "disponible": 20,
+            "categoria": "2",
+            "tiene_iva": true
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 7,
+        "fields": {
+            "descripcion": "Proyector Full HD",
+            "precio": "350000",
+            "disponible": 10,
+            "categoria": "3",
+            "tiene_iva": false
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 8,
+        "fields": {
+            "descripcion": "Teclado Mecánico RGB",
+            "precio": "90000",
+            "disponible": 40,
+            "categoria": "4",
+            "tiene_iva": true
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 9,
+        "fields": {
+            "descripcion": "Reloj Inteligente",
+            "precio": "150000",
+            "disponible": 18,
+            "categoria": "1",
+            "tiene_iva": true
+        }
+    },
+    {
+        "model": "inventario.producto",
+        "pk": 10,
+        "fields": {
+            "descripcion": "Estación de Acoplamiento USB-C",
+            "precio": "120000",
+            "disponible": 22,
             "categoria": "2",
             "tiene_iva": false
         }

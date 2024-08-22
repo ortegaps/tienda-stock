@@ -35,11 +35,10 @@ class Opciones(models.Model):
 
 #-------------------------------PRODUCTO------------------------------------------------
 class Producto(models.Model):
-    # id
     decisiones = [('1', 'Unidad'), ('2', 'Kilo'), ('3', 'Litro'), ('4', 'Otros')]
     descripcion = models.CharField(max_length=40)
     precio = models.DecimalField(max_digits=9, decimal_places=2)
-    disponible = models.IntegerField(null=True)
+    disponible = models.IntegerField(default=0)
     categoria = models.CharField(max_length=20, choices=decisiones)
     tiene_iva = models.BooleanField(null=True)
 

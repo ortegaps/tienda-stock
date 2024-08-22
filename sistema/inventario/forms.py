@@ -25,26 +25,42 @@ class LoginFormulario(forms.Form):
 
 class ProductoFormulario(forms.ModelForm):
     precio = forms.DecimalField(
-        min_value = 0,
-        label = 'Precio',
-        widget = forms.NumberInput(
-        attrs={'placeholder': 'Precio del producto',
-        'id':'precio','class':'form-control'}),
+        min_value=0,
+        label='Precio',
+        widget=forms.NumberInput(
+            attrs={
+                'placeholder': 'Precio del producto',
+                'id': 'precio',
+                'class': 'form-control'
+            }
         )
+    )
+    disponible = forms.IntegerField(
+        min_value=0,
+        label='Disponible',
+        widget=forms.NumberInput(
+            attrs={
+                'placeholder': 'Cantidad disponible',
+                'id': 'disponible',
+                'class': 'form-control'
+            }
+        )
+    )
+
     class Meta:
         model = Producto
-        fields = ['descripcion','precio','categoria','tiene_iva']
+        fields = ['descripcion', 'precio', 'disponible', 'categoria', 'tiene_iva']
         labels = {
-        'descripcion': 'Nombre',
-        'tiene_iva': 'Incluye IVA?'
+            'descripcion': 'Nombre',
+            'tiene_iva': 'Incluye IVA?',
+            'disponible': 'Cantidad disponible'
         }
         widgets = {
-        'descripcion': forms.TextInput(attrs={'placeholder': 'Nombre del producto',
-        'id':'descripcion','class':'form-control'} ),
-        'categoria': forms.Select(attrs={'class':'form-control','id':'categoria'}),
-        'tiene_iva': forms.CheckboxInput(attrs={'class':'checkbox rounded','id':'tiene_iva'}) 
+            'descripcion': forms.TextInput(attrs={'placeholder': 'Nombre del producto', 'id': 'descripcion', 'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-control', 'id': 'categoria'}),
+            'tiene_iva': forms.CheckboxInput(attrs={'class': 'checkbox rounded', 'id': 'tiene_iva'})
         }
-
+    
 class ImportarProductosFormulario(forms.Form):
     importar = forms.FileField(
         max_length = 100000000000,

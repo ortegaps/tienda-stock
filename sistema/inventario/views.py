@@ -1,5 +1,6 @@
 #renderiza las vistas al usuario
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
+
 # para redirigir a otras paginas
 from django.http import HttpResponseRedirect, HttpResponse,FileResponse
 #el formulario de login
@@ -363,34 +364,35 @@ class AgregarProducto(LoginRequiredMixin, View):
     redirect_field_name = None
 
     def post(self, request):
-        # Crea una instancia del formulario y la llena con los datos:
         form = ProductoFormulario(request.POST)
-        # Revisa si es valido:
         if form.is_valid():
-            # Procesa y asigna los datos con form.cleaned_data como se requiere
+            # Procesa y asigna los datos con form.cleaned_data
             descripcion = form.cleaned_data['descripcion']
             precio = form.cleaned_data['precio']
             categoria = form.cleaned_data['categoria']
             tiene_iva = form.cleaned_data['tiene_iva']
-            disponible = 0
+            disponible = form.cleaned_data['disponible']
 
-            prod = Producto(descripcion=descripcion,precio=precio,categoria=categoria,tiene_iva=tiene_iva,disponible=disponible)
+            prod = Producto(
+                descripcion=descripcion,
+                precio=precio,
+                categoria=categoria,
+                tiene_iva=tiene_iva,
+                disponible=disponible
+            )
             prod.save()
-            
+
             form = ProductoFormulario()
             messages.success(request, 'Ingresado exitosamente bajo la ID %s.' % prod.id)
             request.session['productoProcesado'] = 'agregado'
             return HttpResponseRedirect("/inventario/agregarProducto")
         else:
-            #De lo contrario lanzara el mismo formulario
             return render(request, 'inventario/producto/agregarProducto.html', {'form': form})
 
-    # Si se llega por GET crearemos un formulario en blanco
-    def get(self,request):
+    def get(self, request):
         form = ProductoFormulario()
-        #Envia al usuario el formulario para que lo llene
-        contexto = {'form':form , 'modo':request.session.get('productoProcesado')}   
-        contexto = complementarContexto(contexto,request.user)  
+        contexto = {'form': form, 'modo': request.session.get('productoProcesado')}
+        contexto = complementarContexto(contexto, request.user)
         return render(request, 'inventario/producto/agregarProducto.html', contexto)
 #Fin de vista------------------------------------------------------------------------# 
 
@@ -474,38 +476,39 @@ class EditarProducto(LoginRequiredMixin, View):
     login_url = '/inventario/login'
     redirect_field_name = None
 
-    def post(self,request,p):
-        # Crea una instancia del formulario y la llena con los datos:
-        form = ProductoFormulario(request.POST)
-        # Revisa si es valido:
-        if form.is_valid():
-            # Procesa y asigna los datos con form.cleaned_data como se requiere
-            descripcion = form.cleaned_data['descripcion']
-            precio = form.cleaned_data['precio']
-            categoria = form.cleaned_data['categoria']
-            tiene_iva = form.cleaned_data['tiene_iva']
-
-            prod = Producto.objects.get(id=p)
-            prod.descripcion = descripcion
-            prod.precio = precio
-            prod.categoria = categoria
-            prod.tiene_iva = tiene_iva
-            prod.save()
-            form = ProductoFormulario(instance=prod)
-            messages.success(request, 'Actualizado exitosamente el producto de ID %s.' % p)
-            request.session['productoProcesado'] = 'editado'            
-            return HttpResponseRedirect("/inventario/editarProducto/%s" % prod.id)
-        else:
-            #De lo contrario lanzara el mismo formulario
-            return render(request, 'inventario/producto/agregarProducto.html', {'form': form})
-
-    def get(self, request,p): 
-        prod = Producto.objects.get(id=p)
-        form = ProductoFormulario(instance=prod)
-        #Envia al usuario el formulario para que lo llene
-        contexto = {'form':form , 'modo':request.session.get('productoProcesado'),'editar':True}    
-        contexto = complementarContexto(contexto,request.user) 
+    def get(self, request, p):
+        # Obtener el producto específico para editar
+        producto = get_object_or_404(Producto, id=p)
+        form = ProductoFormulario(instance=producto)
+        contexto = {
+            'form': form,
+            'modo': request.session.get('productoProcesado'),
+            'editar': True,
+            'producto': producto
+        }
+        contexto = complementarContexto(contexto, request.user)
         return render(request, 'inventario/producto/agregarProducto.html', contexto)
+
+    def post(self, request, p):
+        # Obtener el producto específico para editar
+        producto = get_object_or_404(Producto, id=p)
+        form = ProductoFormulario(request.POST, instance=producto)
+        if form.is_valid():
+            # Guardar el producto con los datos del formulario
+            form.save()
+            messages.success(request, 'Producto actualizado exitosamente.')
+            request.session['productoProcesado'] = 'editado'
+            return redirect('/inventario/editarProducto/%s' % p)
+        else:
+            # De lo contrario, vuelve a renderizar el formulario con errores
+            contexto = {
+                'form': form,
+                'modo': request.session.get('productoProcesado'),
+                'editar': True,
+                'producto': producto
+            }
+            contexto = complementarContexto(contexto, request.user)
+            return render(request, 'inventario/producto/agregarProducto.html', contexto)
 #Fin de vista------------------------------------------------------------------------------------#      
 
 
