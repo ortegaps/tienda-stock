@@ -123,18 +123,9 @@ class ClienteFormulario(forms.ModelForm):
         'id':'correo2','class':'form-control'}),
         )
 
-    tipoCedula = forms.CharField(
-        label="Tipo de cedula",
-        max_length=2,
-        widget=forms.Select(choices=tipoC,attrs={'placeholder': 'Tipo de cedula',
-        'id':'tipoCedula','class':'form-control'}
-        )
-        )
-
-
     class Meta:
         model = Cliente
-        fields = ['tipoCedula','cedula','nombre','apellido','direccion','nacimiento','telefono','correo','telefono2','correo2']
+        fields = ['cedula','nombre','apellido','direccion','nacimiento','telefono','correo','telefono2','correo2']
         labels = {
         'cedula': 'Cedula del cliente',
         'nombre': 'Nombre del cliente',
@@ -243,18 +234,9 @@ class ProveedorFormulario(forms.ModelForm):
         'id':'correo2','class':'form-control'}),
         )
 
-    tipoCedula = forms.CharField(
-        label="Tipo de cedula",
-        max_length=2,
-        widget=forms.Select(choices=tipoC,attrs={'placeholder': 'Tipo de cedula',
-        'id':'tipoCedula','class':'form-control'}
-        )
-        )
-
-
     class Meta:
         model = Proveedor
-        fields = ['tipoCedula','cedula','nombre','apellido','direccion','nacimiento','telefono','correo','telefono2','correo2']
+        fields = ['cedula','nombre','apellido','direccion','nacimiento','telefono','correo','telefono2','correo2']
         labels = {
         'cedula': 'Cedula del proveedor',
         'nombre': 'Nombre del proveedor',

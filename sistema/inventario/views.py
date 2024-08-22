@@ -944,7 +944,7 @@ class ListarProveedores(LoginRequiredMixin, View):
 
 
 #Crea y procesa un formulario para agregar a un proveedor---------------------------------#
-class AgregarProveedor(LoginRequiredMixin, View):
+"""class AgregarProveedor(LoginRequiredMixin, View):
     login_url = '/inventario/login'
     redirect_field_name = None
 
@@ -984,6 +984,31 @@ class AgregarProveedor(LoginRequiredMixin, View):
         #Envia al usuario el formulario para que lo llene
         contexto = {'form':form , 'modo':request.session.get('proveedorProcesado')} 
         contexto = complementarContexto(contexto,request.user)         
+        return render(request, 'inventario/proveedor/agregarProveedor.html', contexto)"""
+
+class AgregarProveedor(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None
+
+    def post(self, request):
+        form = ProveedorFormulario(request.POST)
+        if form.is_valid():
+            proveedor = form.save(commit=False)  # Guardar sin confirmar aún
+            proveedor.save()  # Guardar en la base de datos
+            messages.success(request, f'Ingresado exitosamente bajo la ID {proveedor.id}.')
+            request.session['proveedorProcesado'] = 'agregado'
+            return HttpResponseRedirect("/inventario/agregarProveedor")
+        else:
+            # Agregar los errores del formulario al contexto
+            return render(request, 'inventario/proveedor/agregarProveedor.html', {
+                'form': form,
+                'errors': form.errors,  # Pasamos los errores al template
+            })
+
+    def get(self, request):
+        form = ProveedorFormulario()
+        contexto = {'form': form, 'modo': request.session.get('proveedorProcesado')}
+        contexto = complementarContexto(contexto, request.user)         
         return render(request, 'inventario/proveedor/agregarProveedor.html', contexto)
 #Fin de vista-----------------------------------------------------------------------------#
 
@@ -1011,9 +1036,6 @@ class ImportarProveedores(LoginRequiredMixin, View):
             contexto = complementarContexto(contexto,request.user)             
         return render(request, 'inventario/importarClientes.html',contexto)
 #Fin de vista-------------------------------------------------------------------------#
-
-
-
 
 #Formulario simple que crea un archivo y respalda los proveedores-----------------------#
 class ExportarProveedores(LoginRequiredMixin, View):

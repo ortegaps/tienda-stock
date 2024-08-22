@@ -1,3 +1,4 @@
+{% load humanize %}
 <html>
     <head>
         <meta charset="UTF-8">
@@ -38,22 +39,21 @@
             table {
                 border-collapse: collapse;
                 width: 100%;
-                    }   
+            }   
 
             th, td {
                 text-align: left;
                 padding: 8px;
-                    }
+            }
 
             tr:nth-child(even){background-color: #f2f2f2}
 
             th,tfoot {
                 background-color: #4CAF50;
                 color: white;
-                }
+            }
 
-            #factura_mensaje
-            {
+            #factura_mensaje {
                 text-align: center;
                 background-color: #b8afaf;
                 font-size: 18px;
@@ -61,8 +61,7 @@
                 padding-top: 8px;
             }
 
-            #negocio_nombre
-            {
+            #negocio_nombre {
                 font-size: 22px;
                 font-weight: 100;
                 text-align: center;
@@ -87,54 +86,50 @@
                 <p class='title'>Pedido #{{ id_reporte }} </p>
                 {% endif %}
             </div>
-        <div>
-        <div class='details'>
-            {% if modo == 'factura' %}
-            Nombre completo del cliente: {{ nombre_cliente }} <br/>
-            Cedula del cliente: {{ cedula_cliente }}  <br/>
-            {% else %}
-            Nombre completo del proveedor: {{ nombre_proveedor }} <br/>
-            Cedula del proveedor: {{ cedula_proveedor }}  <br/>
-            {% endif %}
-            Total general: {{ monto_general }}  <br/>
-            Fecha: {{ fecha }} <br/>
-            IVA utilizado: {{ iva }}% <br/>
-            <hr class='hrItem' />
+            <div class='details'>
+                {% if modo == 'factura' %}
+                Nombre completo del cliente: {{ nombre_cliente }} <br/>
+                Cedula del cliente: {{ cedula_cliente }} <br/>
+                {% else %}
+                Nombre completo del proveedor: {{ nombre_proveedor }} <br/>
+                Cedula del proveedor: {{ cedula_proveedor }} <br/>
+                {% endif %}
+                Total general: {{ monto_general|floatformat:0|intcomma }} <br/>
+                Fecha: {{ fecha }} <br/>
+                IVA utilizado: {{ iva|floatformat:0|intcomma }}% <br/>
+                <hr class='hrItem' />
+            </div>
         </div>
-    </div>
 
-    <div>
+        <div>
+            <table>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Sub-total</th>
+                    <th>Total</th>
+                </tr>
+                {% for producto in detalles %}
+                <tr>
+                    <td>{{ producto.id_producto.descripcion }}</td>
+                    <td>{{ producto.cantidad|floatformat:0|intcomma }}</td>
+                    <td>{{ producto.sub_total|floatformat:0|intcomma }}</td>
+                    <td>{{ producto.total|floatformat:0|intcomma }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>-----</td>
+                    <td>-----</td>
+                    <td>-----</td>
+                    <td>
+                        Total general: {{ monto_general|floatformat:0|intcomma }}
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-<table>
-  <tr>
-    <th>Producto</th>
-    <th>Cantidad</th>
-    <th>Sub-total</th>
-    <th>Total</th>
-  </tr>
-  {% for producto in detalles %}
-  <tr>
-    <td>{{ producto.id_producto.descripcion }}</td>
-    <td>{{ producto.cantidad }}</td>
-    <td>{{ producto.sub_total }}</td>
-    <td>{{ producto.total }}</td>
-  </tr>
-  {% endfor %}
-  <tr>
-    <td>-----</td>
-    <td>-----</td>
-    <td>-----</td>
-    <td>
-      Total general : {{ monto_general }}
-    </td>
-  </tr>
-</table>
-
-    </div>
-
-    <div id="factura_mensaje">
-        {{ general.mensaje_factura }}
-    </div>
-
+        <div id="factura_mensaje">
+            {{ general.mensaje_factura }}
+        </div>
     </body>
 </html>

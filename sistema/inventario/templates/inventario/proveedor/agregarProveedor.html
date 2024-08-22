@@ -39,16 +39,19 @@ window.onload = function() {
     <section class="section">
         <div class="row sameheight-container">
             <div class="col-md-12">
-                {% for error in form.non_field_errors %}
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <div class="header-block">
-                            <p class="title">{{ form.errors }}</p>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
 
+                <!-- Mostrar errores generales del formulario -->
+                {% if errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, error_list in errors.items %}
+                        <li><strong>{{ field }}:</strong> {{ error_list|join:", " }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Mostrar mensajes de éxito -->
                 {% if modo == "agregado" and messages %}
                 {% for message in messages %}
                 <div class="card card-primary">
@@ -75,66 +78,66 @@ window.onload = function() {
                 {% endfor %}
                 {% endif %}
 
-                <!-------------------   FORMULARIO PARA AGREGAR PROVEEDOR ---------------------------------->
+                <!-- FORMULARIO PARA AGREGAR PROVEEDOR -->
                 <div class="card card-block sameheight-item">
                     <form role="form" method="POST" onsubmit="return validarTodo('proveedor')">
                         {% csrf_token %}
 
-                        <!----------------   CAMPOS DE CÉDULA ---------------------->
+                        <!-- CAMPOS DE CÉDULA -->
                         <div class="form-group">
                             <label for="{{ form.cedula.id_for_label }}">Cédula</label>
                             {{ form.cedula }}
                         </div>
 
-                        <!-----------------   CAMPO DEL NOMBRE ------------------>
+                        <!-- CAMPO DEL NOMBRE -->
                         <div class="form-group">
                             <label for="{{ form.nombre.id_for_label }}">Nombre</label>
                             {{ form.nombre }}
                         </div>
 
-                        <!-----------------   CAMPO DEL APELLIDO ------------------>
+                        <!-- CAMPO DEL APELLIDO -->
                         <div class="form-group">
                             <label for="{{ form.apellido.id_for_label }}">Apellido</label>
                             {{ form.apellido }}
                         </div>
 
-                        <!-----------------   CAMPO DE LA DIRECCIÓN ------------------>
+                        <!-- CAMPO DE LA DIRECCIÓN -->
                         <div class="form-group">
                             <label for="{{ form.direccion.id_for_label }}">Dirección</label>
                             {{ form.direccion }}
                         </div>
 
-                        <!-----------------   CAMPO DEL NACIMIENTO ------------------>
+                        <!-- CAMPO DEL NACIMIENTO -->
                         <div class="form-group">
                             <label for="{{ form.nacimiento.id_for_label }}">Fecha de Nacimiento</label>
                             {{ form.nacimiento }}
                         </div>
 
-                        <!-----------------   CAMPO DEL TELÉFONO ------------------>
+                        <!-- CAMPO DEL TELÉFONO -->
                         <div class="form-group">
                             <label for="{{ form.telefono.id_for_label }}">Teléfono</label>
                             {{ form.telefono }}
                         </div>
 
-                        <!-----------------   CAMPO DEL CORREO ------------------>
+                        <!-- CAMPO DEL CORREO -->
                         <div class="form-group">
                             <label for="{{ form.correo.id_for_label }}">Correo</label>
                             {{ form.correo }}
                         </div>
 
-                        <!-----------------   CAMPO DEL CORREO ALTERNATIVO ------------------>
+                        <!-- CAMPO DEL CORREO ALTERNATIVO -->
                         <div class="form-group" id="div_correo2">
                             <label for="{{ form.correo2.id_for_label }}">Correo Alternativo</label>
                             {{ form.correo2 }}
                         </div>
 
-                        <!-----------------   CAMPO DEL TELÉFONO ALTERNATIVO ------------------>
+                        <!-- CAMPO DEL TELÉFONO ALTERNATIVO -->
                         <div class="form-group" id="div_telefono2">
                             <label for="{{ form.telefono2.id_for_label }}">Teléfono Alternativo</label>
                             {{ form.telefono2 }}
                         </div>
 
-                        <!------------    MUESTRA LOS CAMPOS OPCIONALES -------------->
+                        <!-- MUESTRA LOS CAMPOS OPCIONALES -->
                         <div class="form-group">
                             <label>
                                 <input id="mostrar_opcionales" class="checkbox rounded" type="checkbox" onchange="clienteCamposOcultos(this)">
@@ -142,7 +145,7 @@ window.onload = function() {
                             </label>
                         </div>
 
-                        <!------------------------------- BOTÓN DE INGRESO ------------------------------------>
+                        <!-- BOTÓN DE INGRESO -->
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Guardar</button>
                         </div>
