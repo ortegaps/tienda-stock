@@ -2,63 +2,143 @@
 
 {% block content %}
 
-
 <article class="content forms-page">
-	    <div class="title-block">
-          <h3 class="title">Emitir factura</h3>
-          <p class="title-description">Llene todos los campos</p>
-        </div>
-<section class="section">
-    <div class="row sameheight-container">
-	<div class="col-md-12">
-		<form role="form" method="POST">
-		{{ formset.management_form }}	
-		{% for form in formset %}
-		<div class="card card-block sameheight-item">
-			{% csrf_token %}
-				{% for field in form %}
-				{% if field.name == 'valor_subtotal' %}
-					{{field}}
-				{% elif field.name == 'cantidad' %}
-			<div class="row form-group">
-				<label for="{{ field.name }}" class="col-3 form-control-label">
-					{{field.label}}
-				</label>
+    <div class="title-block">
+        <h3 class="title">Emitir factura</h3>
+        <p class="title-description">Llene todos los campos</p>
+    </div>
+    <section class="section">
+        <div class="row sameheight-container">
+            <div class="col-md-12">
+                <form role="form" method="POST" id="formFactura">
+                    {% csrf_token %}
+                    {{ formset.management_form }} <!-- El formset proporciona los campos management_form -->
+                    <div id="productos-form-container">
+                        <!-- Aquí se renderizan los productos existentes -->
+                        {% for form in formset %}
+                            <div class="card card-block sameheight-item producto-item" id="producto-{{ forloop.counter }}">
+                                {% for field in form %}
+                                    <div class="form-group">
+                                        <label for="{{ field.id_for_label }}">
+                                            {{ field.label }}
+                                        </label>
+                                        {{ field }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
 
-                <div class="col-3">
-                 {{field}}
-             	</div>
+                    <!-- Botón para agregar más productos -->
+                    <div class="form-group">
+                        <button type="button" id="agregarProducto" class="btn btn-success">+ Productos</button>
+                    </div>
 
-             	<label for="{{ form.cantidad_disponibles.name }}" class="col-3 form-control-label">
-					{{form.cantidad_disponibles.label}}
-				</label>
+                    <!-- Muestra el total de la factura -->
+                    <div class="form-group">
+                        <strong>Total:</strong> $<span id="totalFactura">0.00</span>
+                    </div>
 
-             	<div class="col-3">
-                 {{form.cantidad_disponibles}}
-             	</div>
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                </form>
             </div>
-            {% elif field.name == 'cantidad_disponibles' %}
-
-            {% elif field.name == 'selec_disponibles' %}
-            {{ field }}
-	
-				{% else %}
-				<div class="form-group">
-				<label for="{{ field.name }}">
-				{{field.label}}
-				</label>
-				{{field}}
-				</div>
-				{% endif %}
-				{% endfor %}
-		</div>
-		{% endfor %}
-		<button type="submit" class="btn btn-primary">Ingresar</button>
-		</form>
-	</div>
-	</div>
-</section>
+        </div>
+    </section>
 </article>
+
 {% load static %}
-<script src='{% static "inventario/js/inventario.js" %}'></script>
+<script src="{% static 'inventario/js/inventario.js' %}"></script>
+<script>
+// JavaScript para agregar más productos dinámicamente
+document.addEventListener("DOMContentLoaded", function() {
+    const botonAgregarProducto = document.getElementById("agregarProducto");
+    const contenedorProductos = document.getElementById("productos-form-container");
+    const totalFactura = document.getElementById("totalFactura");
+
+    // Función para actualizar el total de la factura
+    function actualizarTotal() {
+        let total = 0;
+        const productos = document.querySelectorAll(".producto-item");
+        productos.forEach(function(producto) {
+            const subtotalInput = producto.querySelector("input[name$='subtotal']");
+            if (subtotalInput && subtotalInput.value) {
+                total += parseFloat(subtotalInput.value);
+            }
+        });
+        totalFactura.textContent = total.toFixed(2);
+    }
+
+    // Función para clonar un formulario de producto
+    botonAgregarProducto.addEventListener("click", function() {
+        const ultimoProducto = contenedorProductos.lastElementChild;
+        const nuevoProducto = ultimoProducto.cloneNode(true); // Clonamos el último producto
+
+        // Actualizamos los IDs y el nombre de los campos para evitar duplicados
+        const campos = nuevoProducto.querySelectorAll('input, select, textarea');
+        campos.forEach((campo) => {
+            // Cambiar los IDs para el nuevo campo
+            const nuevoId = campo.id.replace(/\d+/, contenedorProductos.children.length); // Cambiar el índice
+            const nuevoName = campo.name.replace(/\d+/, contenedorProductos.children.length);  // Cambiar el índice
+
+            campo.id = nuevoId;
+            campo.name = nuevoName;
+
+            // Restablecer los valores a 0 o vacíos si es necesario
+            if (campo.name.includes('subtotal')) {
+                campo.value = '0.00';  // Establecer subtotal a 0
+            } else if (campo.name.includes('cantidad')) {
+                campo.value = '';  // Restablecer cantidad a vacío para evitar valor predeterminado '1'
+            } else if (campo.name.includes('valor_unitario')) {
+                campo.value = '';  // Restablecer precio unitario
+            }
+        });
+
+        // Añadir el nuevo producto al contenedor
+        contenedorProductos.appendChild(nuevoProducto);
+
+        // Actualizar el management_form
+        const formCountInput = document.getElementById("id_form-TOTAL_FORMS");
+        formCountInput.value = contenedorProductos.children.length;
+
+        // Actualizar el total cuando se agrega un producto
+        actualizarTotal();
+    });
+
+    // Función para actualizar el precio y el subtotal cuando se selecciona un producto
+    document.addEventListener("change", function(event) {
+        if (event.target.name.includes('descripcion')) {
+            const productoSeleccionado = event.target.value;
+            const precioInput = event.target.closest('.form-group').querySelector("select[name$='vista_precio']");
+            const cantidadInput = event.target.closest('.form-group').querySelector("input[name$='cantidad']");
+            const subtotalInput = event.target.closest('.form-group').querySelector("input[name$='subtotal']");
+            
+            if (productoSeleccionado && precioInput) {
+                const precio = parseFloat(precioInput.options[precioInput.selectedIndex].value || 0);
+                const cantidad = parseInt(cantidadInput.value) || 0;
+                const subtotal = precio * cantidad;
+                subtotalInput.value = subtotal.toFixed(2);
+
+                actualizarTotal();  // Actualizar el total cuando cambie el subtotal
+            }
+        }
+
+        // Cuando cambia la cantidad, recalcular el subtotal
+        if (event.target.name.includes('cantidad')) {
+            const cantidadInput = event.target;
+            const precioInput = event.target.closest('.form-group').querySelector("select[name$='vista_precio']");
+            const subtotalInput = event.target.closest('.form-group').querySelector("input[name$='subtotal']");
+            
+            const precio = parseFloat(precioInput.options[precioInput.selectedIndex].value || 0);
+            const cantidad = parseInt(cantidadInput.value) || 0;
+            const subtotal = precio * cantidad;
+            subtotalInput.value = subtotal.toFixed(2);
+
+            actualizarTotal();  // Actualizar el total cuando se cambie la cantidad
+        }
+    });
+
+    // Inicializar la actualización del total
+    actualizarTotal();
+});
+</script>
 {% endblock %}

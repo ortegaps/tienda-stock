@@ -712,7 +712,7 @@ class EmitirFactura(LoginRequiredMixin, View):
         # Revisa si es valido:
         if form.is_valid():
             # Procesa y asigna los datos con form.cleaned_data como se requiere
-            request.session['form_details'] = form.cleaned_data['productos']
+            #request.session['form_details'] = form.cleaned_data['productos']
             request.session['id_client'] = form.cleaned_data['cliente']
             return HttpResponseRedirect("detallesDeFactura")
         else:
@@ -736,7 +736,7 @@ class DetallesFactura(LoginRequiredMixin, View):
 
     def get(self, request):
         cedula = request.session.get('id_client')
-        productos = request.session.get('form_details')
+        productos = 1 #request.session.get('form_details')
         FacturaFormulario = formset_factory(DetallesFacturaFormulario, extra=productos)
         formset = FacturaFormulario()
         contexto = {'formset':formset}
